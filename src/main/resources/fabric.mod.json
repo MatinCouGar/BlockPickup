@@ -2,9 +2,11 @@
   "schemaVersion": 1,
   "id": "block_pickup",
   "version": "1.0.0",
-  "name": "Block Pickup",
+  "name": "Client Block Pickup",
   "description": "Prevents picking up items when toggled.",
-  "authors": ["Couger"],
+  "authors": [
+    "MatinCouGar"
+  ],
   "contact": {},
   "license": "MIT",
   "icon": "assets/block_pickup/icon.png",
@@ -12,7 +14,14 @@
 
   "entrypoints": {
     "main": [
-      "couger.plugin.blockpickup.BlockPickup"]
+      "couger.plugin.blockpickup.BlockPickup"
+    ],
+    "client": [
+      {
+        "adapter": "default",
+        "value": "couger.plugin.blockpickup.Nothing"
+      }
+    ]
   },
 
   "mixins": [
@@ -22,6 +31,6 @@
   "depends": {
     "fabricloader": ">=0.15.0",
     "fabric-api": "*",
-    "minecraft": ">=1.21 <=1.21.10"
+    "minecraft": ">=1.21.9 <=1.21.11"
   }
 }
