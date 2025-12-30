@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "couger.plugin.blockpickup.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "InventoryMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
