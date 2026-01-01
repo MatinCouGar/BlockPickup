@@ -29,21 +29,21 @@ public class BlockPickupClient implements ClientModInitializer {
             if (client.player == null) return;
 
             while (toggleKey.wasPressed()) {
-                BlockPickup.isEnabled = !BlockPickup.isEnabled;
-                if (BlockPickup.isEnabled) {
-                    BlockPickup.takeInventorySnapshot(client.player.getInventory());
-                    client.player.sendMessage(Text.literal("§aGuard: ON"), true);
+                if (!BlockPickup.isEnabled) {
+                    client.setScreen(new PickupConfirmScreen());
                 } else {
-                    client.player.sendMessage(Text.literal("§cGuard: OFF"), true);
+                    BlockPickup.isEnabled = false;
+                    BlockPickup.taskQueue.clear();
+                    client.player.sendMessage(Text.literal("§cPickup Blocking: OFF"), true);
                 }
             }
 
-            if (BlockPickup.isEnabled && !BlockPickup.taskQueue.isEmpty()) {
+            if (BlockPickup.isEnabled && client.currentScreen == null && !BlockPickup.taskQueue.isEmpty()) {
                 long currentTime = System.currentTimeMillis();
                 if (currentTime - lastActionTime >= 150) {
                     var task = BlockPickup.taskQueue.poll();
                     if (task != null) {
-                        executeDrop(client, task);
+                        executeDropLogic(client, task);
                         lastActionTime = currentTime;
                     }
                 }
@@ -51,8 +51,10 @@ public class BlockPickupClient implements ClientModInitializer {
         });
     }
 
-    private void executeDrop(MinecraftClient client, BlockPickup.CursorTask task) {
+    private void executeDropLogic(MinecraftClient client, BlockPickup.CursorTask task) {
+        if (client.player == null || client.interactionManager == null) return;
         int syncId = client.player.currentScreenHandler.syncId;
+
         client.interactionManager.clickSlot(syncId, task.syncSlot(), 0, SlotActionType.PICKUP, client.player);
         for (int i = 0; i < task.countToKeep(); i++) {
             client.interactionManager.clickSlot(syncId, task.syncSlot(), 1, SlotActionType.PICKUP, client.player);

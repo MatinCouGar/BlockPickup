@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class BlockPickup implements ModInitializer {
     public static boolean isEnabled = false;
+    public static boolean isProcessing = false;
     public static final HashMap<Item, Integer> inventorySnapshot = new HashMap<>();
     public static final ConcurrentLinkedQueue<CursorTask> taskQueue = new ConcurrentLinkedQueue<>();
 
@@ -15,6 +16,7 @@ public class BlockPickup implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        // Mod initialization
     }
 
     public static void takeInventorySnapshot(PlayerInventory inv) {
@@ -22,7 +24,7 @@ public class BlockPickup implements ModInitializer {
         for (int i = 0; i < inv.size(); i++) {
             var stack = inv.getStack(i);
             if (!stack.isEmpty()) {
-                inventorySnapshot.put(stack.getItem(), stack.getCount());
+                inventorySnapshot.put(stack.getItem(), inventorySnapshot.getOrDefault(stack.getItem(), 0) + stack.getCount());
             }
         }
     }
